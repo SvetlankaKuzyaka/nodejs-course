@@ -8,12 +8,16 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-  const user = await userService.get(req.params.id);
-  res.json(User.toResponse(user));
+  try {
+    const user = await userService.get(req.params.id);
+    res.json(User.toResponse(user));
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 });
 
 router.route('/').post(async (req, res) => {
-  const user = await userService.create(new User(req.body));
+  const user = await userService.create(req.body);
   res.json(User.toResponse(user));
 });
 
