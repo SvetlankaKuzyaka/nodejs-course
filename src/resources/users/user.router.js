@@ -7,9 +7,9 @@ router.route('/').get(async (req, res) => {
   res.json(users.map(User.toResponse));
 });
 
-router.route('/:id').get(async (req, res) => {
+router.route('/:userId').get(async (req, res) => {
   try {
-    const user = await userService.get(req.params.id);
+    const user = await userService.get(req.params.userId);
     res.json(User.toResponse(user));
   } catch (err) {
     res.status(404).send(err.message);
@@ -21,13 +21,13 @@ router.route('/').post(async (req, res) => {
   res.json(User.toResponse(user));
 });
 
-router.route('/:id').put(async (req, res) => {
-  const user = await userService.update(req.params.id, req.body);
+router.route('/:userId').put(async (req, res) => {
+  const user = await userService.update(req.params.userId, req.body);
   res.json(User.toResponse(user));
 });
 
-router.route('/:id').delete(async (req, res) => {
-  const user = await userService.remove(req.params.id);
+router.route('/:userId').delete(async (req, res) => {
+  const user = await userService.remove(req.params.userId);
   res.json(User.toResponse(user));
 });
 
