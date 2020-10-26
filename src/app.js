@@ -4,13 +4,13 @@ const path = require('path');
 const YAML = require('yamljs');
 const cors = require('cors');
 const helmet = require('helmet');
-const { INTERNAL_SERVER_ERROR, getStatusText } = require('http-status-codes');
 require('express-async-errors');
 
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
 const logger = require('./common/logger');
+const errorHandler = require('./errors/errorHandler');
 
 const app = express();
 
@@ -43,10 +43,6 @@ app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
 
-app.use((err, req, res, next) => {
-  logger.error(err.message);
-  res.status(INTERNAL_SERVER_ERROR).send(getStatusText(INTERNAL_SERVER_ERROR));
-  next(err);
-});
+app.use(errorHandler);
 
 module.exports = app;
