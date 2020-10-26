@@ -4,6 +4,8 @@ const path = require('path');
 const YAML = require('yamljs');
 const cors = require('cors');
 const helmet = require('helmet');
+const createError = require('http-errors');
+const { NOT_FOUND } = require('http-status-codes');
 require('express-async-errors');
 
 const userRouter = require('./resources/users/user.router');
@@ -13,6 +15,7 @@ const logger = require('./common/logger');
 const errorHandler = require('./errors/errorHandler');
 
 const app = express();
+app.disable('x-powered-by');
 
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
@@ -42,6 +45,8 @@ app.use('/', (req, res, next) => {
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 boardRouter.use('/:boardId/tasks', taskRouter);
+
+app.use((req, res, next) => next(createError(NOT_FOUND)));
 
 app.use(errorHandler);
 

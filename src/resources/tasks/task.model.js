@@ -15,4 +15,9 @@ const Task = new mongoose.Schema(
   }
 );
 
+Task.statics.toResponse = task => {
+  const { id, title, order, description, userId, boardId, columnId } = task;
+  return { id, title, order, description, userId, boardId, columnId };
+};
+
 module.exports = mongoose.model('tasks', Task);

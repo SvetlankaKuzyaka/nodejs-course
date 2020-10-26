@@ -8,12 +8,10 @@ const getAll = async boardId => Task.find({ boardId });
 const get = async (boardId, taskId) => {
   const task = await Task.findOne({ boardId, _id: taskId });
   if (!task) {
-    throw new NOT_FOUND_ERROR(`${ENTITY_NAME} was not found`);
+    throw new NOT_FOUND_ERROR(ENTITY_NAME, { id: taskId, boardId });
   }
   return task;
 };
-
-const getAllByUser = async userId => Task.find({ userId });
 
 const create = async (boardId, task) => Task.create({ ...task, boardId });
 
@@ -22,7 +20,20 @@ const update = async (boardId, taskId, task) => {
   return get(boardId, taskId);
 };
 
-const remove = async (boardId, taskId) =>
-  Task.deleteOne({ boardId, _id: taskId });
+const updateAllByUser = async userId =>
+  Task.updateMany({ userId }, { userId: null });
 
-module.exports = { getAll, get, getAllByUser, create, update, remove };
+const remove = async (boardId, taskId) =>
+  Task.deleteOne({ _id: taskId, boardId });
+
+const removeAllByBoard = async boardId => Task.deleteMany({ boardId });
+
+module.exports = {
+  getAll,
+  get,
+  create,
+  update,
+  updateAllByUser,
+  remove,
+  removeAllByBoard
+};

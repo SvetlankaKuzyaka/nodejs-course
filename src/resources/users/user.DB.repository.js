@@ -1,5 +1,6 @@
 const User = require('./user.model');
 const { NOT_FOUND_ERROR } = require('../../errors/appError');
+const taskRepo = require('../tasks/task.DB.repository');
 
 const ENTITY_NAME = 'user';
 
@@ -8,7 +9,7 @@ const getAll = async () => User.find({});
 const get = async id => {
   const user = await User.findById(id);
   if (!user) {
-    throw new NOT_FOUND_ERROR(`${ENTITY_NAME} was not found`);
+    throw new NOT_FOUND_ERROR(ENTITY_NAME, { id });
   }
   return user;
 };
@@ -20,6 +21,9 @@ const update = async (id, user) => {
   return get(id);
 };
 
-const remove = async id => User.deleteOne({ _id: id });
+const remove = async id => {
+  await taskRepo.updateAllByUser(id);
+  return User.deleteOne({ _id: id });
+};
 
 module.exports = { getAll, get, create, update, remove };
