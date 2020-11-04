@@ -1,5 +1,5 @@
 const User = require('./user.model');
-const { NOT_FOUND_ERROR } = require('../../errors/appError');
+const { NOT_FOUND_ERROR, FORBIDDEN_ERROR } = require('../../errors/appError');
 const taskRepo = require('../tasks/task.DB.repository');
 
 const ENTITY_NAME = 'user';
@@ -10,6 +10,14 @@ const get = async id => {
   const user = await User.findById(id);
   if (!user) {
     throw new NOT_FOUND_ERROR(ENTITY_NAME, { id });
+  }
+  return user;
+};
+
+const getByLogin = async login => {
+  const user = await User.findOne({ login });
+  if (!user) {
+    throw new FORBIDDEN_ERROR();
   }
   return user;
 };
@@ -26,4 +34,4 @@ const remove = async id => {
   return User.deleteOne({ _id: id });
 };
 
-module.exports = { getAll, get, create, update, remove };
+module.exports = { getAll, get, getByLogin, create, update, remove };
