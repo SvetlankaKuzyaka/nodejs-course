@@ -11,8 +11,10 @@ require('express-async-errors');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
 const taskRouter = require('./resources/tasks/task.router');
+const loginRouter = require('./resources/login/login.router');
 const logger = require('./common/logger');
 const errorHandler = require('./errors/errorHandler');
+const checkToken = require('./auth/checkToken');
 
 const app = express();
 app.disable('x-powered-by');
@@ -41,6 +43,10 @@ app.use('/', (req, res, next) => {
   );
   next();
 });
+
+app.use('/login', loginRouter);
+
+app.use(checkToken);
 
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
